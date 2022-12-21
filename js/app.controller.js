@@ -4,16 +4,19 @@ import { utilService } from './services/util.service.js'
 import { weatherService } from './services/weather.service.js'
 
 // import { storageService } from './services/async-storage.service.js'
-
+export const appController ={
+    renderLocations,
+}
 window.onload = onInit
 window.onAddMarker = onAddMarker
 window.onPanTo = onPanTo
-window.onGetLocs = onGetLocs
+window.renderLocations = renderLocations
 window.onGetUserPos = onGetUserPos
 window.onSearch = onSearch
+window.onDeleteLoc = onDeleteLoc
 
 function onInit() {
-    onGetLocs()
+    renderLocations()
     mapService.initMap()
         .then(() => {
             console.log('Map is ready')
@@ -35,23 +38,32 @@ function onAddMarker() {
     mapService.addMarker({ lat: 32.0749831, lng: 34.9120554 })
 }
 
-function onGetLocs() {
-    locService.getLocs()
+function renderLocations() {
+    return locService.getLocs()
         .then(locs => {
-            console.log(locs);
-            const strHTML = locs.map(loc => {
-                const pos = {lat:loc.lat, lng:loc.lng}
+            var strHTML =
+            `<tr>
+            <td>Name</td>
+            <td>Location</td>
+            <td>Actions</td>
+            </tr>`
+            if (!locs || locs.length === 0) {
+                document.querySelector('table').innerHTML = strHTML
+                return
+            }
+            strHTML += locs.map(loc => {
+                const pos = { lat: loc.lat, lng: loc.lng }
                 return `<tr>
                     <td>${loc.name}</td>
-                    <td>${loc.lat},${loc.lng}</td>
+                    <td>${loc.lat.toFixed(3)},${loc.lng.toFixed(3)}</td>
                     <td>
                     <button onclick="onPanTo(${loc.lat}, ${loc.lng})">Go</button>
-                    <button>Delete</button>
+                    <button onclick="onDeleteLoc('${loc.id}')" >Delete</button>
                     </td>
                 </tr>`
-            }
-            )
-            document.querySelector('table').innerHTML += strHTML.join('')
+            }).join('')
+            document.querySelector('table').innerHTML = strHTML
+            mapService.addMarkers()
         })
 }
 
@@ -59,8 +71,8 @@ function onGetUserPos(ev) {
     ev.preventDefault()
     getPosition()
         .then(location => {
-            const {latitude:lat, longitude:lng} = location.coords
-            onPanTo(lat,lng)
+            const { latitude: lat, longitude: lng } = location.coords
+            onPanTo(lat, lng)
 
         })
         .catch(err => {
@@ -68,8 +80,13 @@ function onGetUserPos(ev) {
         })
 }
 
-function onPanTo(lat,lng) {
+function onPanTo(lat, lng) {
     mapService.panTo(lat, lng)
+}
+
+function onDeleteLoc(id) {
+    locService.deleteLoc(id).then(renderLocations)
+    mapService.spliceMarker(id)
 }
 
 function onSearch(locName) {
