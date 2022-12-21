@@ -1,6 +1,11 @@
 export const utilService = {
     saveToStorage,
-    loadFromStorage
+    loadFromStorage,
+    cleanStorage
+}
+
+function cleanStorage(key){
+   saveToStorage(key,null)
 }
 
 function saveToStorage(key, value) {
@@ -11,3 +16,4 @@ function loadFromStorage(key) {
     const data = localStorage.getItem(key)
     return (data) ? JSON.parse(data) : undefined
 }
+
