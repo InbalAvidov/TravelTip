@@ -1,5 +1,6 @@
 import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
+import { utilService } from './services/util.service.js'
 // import { storageService } from './services/async-storage.service.js'
 export const appController ={
     renderLocations,
@@ -9,6 +10,7 @@ window.onAddMarker = onAddMarker
 window.onPanTo = onPanTo
 window.renderLocations = renderLocations
 window.onGetUserPos = onGetUserPos
+window.onSearch = onSearch
 window.onDeleteLoc = onDeleteLoc
 
 function onInit() {
@@ -84,3 +86,7 @@ function onDeleteLoc(id) {
     mapService.spliceMarker(id)
 }
 
+function onSearch(locName) {
+    let debouncedSearch = utilService.debounce(mapService.search, 3000)
+    console.log(debouncedSearch(locName))
+}

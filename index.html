@@ -10,10 +10,9 @@
 
 <body>
     <div class="travel-tip">
-
         <h1 class="title">TravelTip</h1>
         <form onsubmit="onSubmit()">
-            <input type="search" placeholder="Enter Location">
+            <input type="search" placeholder="Enter Location" oninput="onSearch(this.value)">
             <button>Go</button>
             <button onclick="onGetUserPos(event)">My Location</button>
         </form>
@@ -32,9 +31,8 @@
     </div>
         <!-- <button onclick="onAddMarker()" class="btn-add-marker">Add Marker Speific Location</button> -->
         
-
-    <script type="module" src="js/app.controller.js"></script>
-
+        <script src="lib/axios.js"></script>
+        <script type="module" src="js/app.controller.js"></script>
 </body>
 
 </html>
