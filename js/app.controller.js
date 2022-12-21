@@ -1,6 +1,8 @@
 import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
 import { utilService } from './services/util.service.js'
+import { weatherService } from './services/weather.service.js'
+
 // import { storageService } from './services/async-storage.service.js'
 export const appController ={
     renderLocations,
@@ -16,10 +18,11 @@ window.onDeleteLoc = onDeleteLoc
 function onInit() {
     renderLocations()
     mapService.initMap()
-    .then(() => {
-        console.log('Map is ready')
-    })
-    .catch(() => console.log('Error: cannot init map'))
+        .then(() => {
+            console.log('Map is ready')
+        })
+        .catch(() => console.log('Error: cannot init map'))
+        renderWeather(31,31,'Quatar')
 }
 
 // This function provides a Promise API to the callback-based-api of getCurrentPosition
@@ -89,4 +92,17 @@ function onDeleteLoc(id) {
 function onSearch(locName) {
     let debouncedSearch = utilService.debounce(mapService.search, 3000)
     console.log(debouncedSearch(locName))
+}
+
+function renderWeather(lat,lng,locName){
+ weatherService.getWeather(lat,lng,locName).then(weather=>{ 
+ console.log('weather at render:',weather)
+ const {country,city,desc,AvgTemp,minTemp,maxTemp,wind}=weather
+ const strHTML= `
+ <p><span class="place">${city}, ${country}</span><span class="desc"> ${desc}</span></p>
+ <p><span class="temp">${AvgTemp}</span> temperture from ${minTemp} to ${maxTemp}.wind ${wind} m/s </p>
+ `
+ document.querySelector('.weather').innerHTML=strHTML
+})
+
 }
