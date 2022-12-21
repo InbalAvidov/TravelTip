@@ -72,6 +72,11 @@ function _connectGoogleApi() {
     })
 }
 
+// getWeather(31, 31)
+function getWeather(lat, lon) {
+    const KEY = 'weatherDB'
+    const currweather = storageService.load(KEY) || {}
+    if (currweather) return Promise.resolve(currweather)
 
 function search(locName) {
     const API_KEY_GE0 = `AIzaSyA6WG8zW9hBoHIkuiS2mbS4GQ8zME2jg04`
@@ -89,3 +94,33 @@ function search(locName) {
 
 
 
+    
+
+    console.log('Getting from Network')
+    const API_KEY = '30dc2cce8468139852bf28b9c5bed2a9'
+    return axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&units=metric&lon=${lon}&appid=${API_KEY}`).then(res => {
+        const { name ,sys, weather, main, wind } = res.data
+        const { country } = sys
+        const {description}=weather[0]
+        const{ temp,temp_min,temp_max}=main
+        const {speed}=wind
+        // console.log(':', sys, weather, main, wind)
+        const requiredWeatherInfo = {
+            country,
+            city:name,
+            // flag,
+            weather:description,
+            AvgTemp:temp,
+            minTemp:temp_min,
+            MaxTemp:temp_max,
+            wind:speed
+        }
+        storageService.save(KEY,requiredWeatherInfo)
+        setTimeout(()=>cleanStorage(),1000*60*60*24)
+        return requiredWeatherInfo
+    })
+}
+
+function cleanStorage(){
+    storageService.save(KEY,null)
+}
