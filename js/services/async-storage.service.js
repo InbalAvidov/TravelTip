@@ -1,4 +1,4 @@
-export const storageService = {
+export const asStorageService = {
     post,   // Create
     get,    // Read
     put,    // Update

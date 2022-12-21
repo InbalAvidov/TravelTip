@@ -2,14 +2,14 @@ export const weatherService = {
     getWeather
 }
 
-import {storgeService } from "./storage.service.js"
+import {storgeService} from "./storage.service.js"
 
 window.gTimeOutId = ''
 
 function getWeather({ lat = 31, lng = 31, locName = 'Quatar' }) {
     console.log('hi from weather:')
     const KEY = 'weatherDB'
-    const termLocMap = utilService.loadFromStorage(KEY) || {}
+    const termLocMap =storgeService.loadFromStorage(KEY) || {}
     // console.log('weatherInfo:',weatherInfo)
     if (termLocMap[locName]) {
         // console.log('weatherInfo:',weatherInfo)
@@ -38,8 +38,8 @@ function getWeather({ lat = 31, lng = 31, locName = 'Quatar' }) {
         console.log('weatherInfo to storage:',weatherInfo)
         termLocMap[locName] = weatherInfo
         // console.log('info to storage:', weatherInfo[locName])
-        utilService.saveToStorage(KEY, termLocMap)
-        setTimeout(() => utilService.cleanStorage(), 1000 * 60 * 60 * 24)
+        storgeService.saveToStorage(KEY, termLocMap)
+        setTimeout(() => storgeService.cleanStorage(), 1000 * 60 * 60 * 24)
         console.log('info:', weatherInfo)
         return weatherInfo
     })

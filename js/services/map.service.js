@@ -9,8 +9,8 @@ export const mapService = {
 
 import { locService } from './loc.service.js'
 import { appController } from '../app.controller.js'
-import { utilService } from './storage.service.js'
-import { storageService } from './async-storage.service.js'
+import {storgeService } from './storage.service.js'
+// import { asstorageService } from './async-storage.service.js'
 
 
 // Var that is used throughout this Module (not global)
@@ -54,7 +54,7 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
 }
 
 function addMarkers() {
-    gMarkers = utilService.loadFromStorage(MARKERS_KEY)
+    gMarkers = storgeService.loadFromStorage(MARKERS_KEY)
     if (!gMarkers || gMarkers.length === 0) 
     {
         gMarkers = []

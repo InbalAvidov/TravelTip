@@ -1,5 +1,5 @@
-import { utilService } from './storage.service.js'
-import { storageService } from './async-storage.service.js'
+import {storgeService} from './storage.service.js'
+import {asStorageService } from './async-storage.service.js'
 
 
 const LOCS_KEY = 'location'
@@ -14,7 +14,7 @@ export const locService = {
 function getLocs() {
     return new Promise((resolve, reject) => {
         setTimeout(()=>{
-            gLocs = utilService.loadFromStorage(LOCS_KEY)
+            gLocs = storgeService.loadFromStorage(LOCS_KEY)
             resolve(gLocs)
         }
         ,1000)
@@ -24,11 +24,11 @@ function getLocs() {
 function save(loc) {
     loc.name = prompt('Location name?')
     loc.cratedAt = new Date().getHours() + ':' + new Date().getMinutes()
-    return storageService.post(LOCS_KEY, loc)
+    return asStorageService.post(LOCS_KEY, loc)
 }
 
 function deleteLoc(id){
-    return storageService.remove(LOCS_KEY,id)
+    return asStorageService.remove(LOCS_KEY,id)
 }
 
 
