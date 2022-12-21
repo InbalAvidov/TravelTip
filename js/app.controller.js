@@ -1,14 +1,15 @@
 import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
+import { utilService } from './services/util.service.js'
 
 window.onload = onInit
 window.onAddMarker = onAddMarker
 window.onPanTo = onPanTo
 window.onGetLocs = onGetLocs
 window.onGetUserPos = onGetUserPos
+window.onSearch = onSearch
 
 function onInit() {
-    console.log('by');
     mapService.initMap()
         .then(() => {
             console.log('Map is ready')
@@ -41,8 +42,8 @@ function onGetUserPos(ev) {
     ev.preventDefault()
     getPosition()
         .then(location => {
-            const {latitude:lat, longitude:lng} = location.coords
-            const pos ={lat,lng}
+            const { latitude: lat, longitude: lng } = location.coords
+            const pos = { lat, lng }
             onPanTo(pos)
 
         })
@@ -51,6 +52,11 @@ function onGetUserPos(ev) {
         })
 }
 
-function onPanTo({lat,lng}) {
+function onPanTo({ lat, lng }) {
     mapService.panTo(lat, lng)
+}
+
+function onSearch(locName) {
+    let debouncedSearch = utilService.debounce(mapService.search, 3000)
+    console.log(debouncedSearch(locName))
 }

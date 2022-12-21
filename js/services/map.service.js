@@ -1,18 +1,19 @@
 export const mapService = {
     initMap,
     addMarker,
-    panTo
+    panTo,
+    search
 }
 
 // Var that is used throughout this Module (not global)
 var gMap
 
 function initMap(lat = 32.0749831, lng = 34.9120554) {
-    console.log('InitMap')
+    // console.log('InitMap')
     return _connectGoogleApi()
         .then(() => {
-            const myLatlng = {lat,lng}
-            console.log('google available')
+            const myLatlng = { lat, lng }
+            // console.log('google available')
             gMap = new google.maps.Map(
                 document.querySelector('#map'), {
                 center: myLatlng,
@@ -38,7 +39,7 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
                 );
                 infoWindow.open(gMap);
             });
-            console.log('Map!', gMap)
+            // console.log('Map!', gMap)
         })
 }
 
@@ -60,15 +61,31 @@ function panTo(lat, lng) {
 function _connectGoogleApi() {
     if (window.google) return Promise.resolve()
     const API_KEY = 'AIzaSyDLez0mB8_Kg8kCSsX6FMsWyPrDtejo2xQ'
+    const API = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}`
     var elGoogleApi = document.createElement('script')
-    elGoogleApi.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}`
+    elGoogleApi.src = API
     elGoogleApi.async = true
     document.body.append(elGoogleApi)
-
     return new Promise((resolve, reject) => {
         elGoogleApi.onload = resolve
         elGoogleApi.onerror = () => reject('Google script failed to load')
     })
 }
+
+
+function search(locName) {
+    const API_KEY_GE0 = `AIzaSyA6WG8zW9hBoHIkuiS2mbS4GQ8zME2jg04`
+    const API_GEO = `https://maps.googleapis.com/maps/api/geocode/json?address=${locName}&key=${API_KEY_GE0}`
+    return axios.get(API_GEO).then(loc => {
+        console.log(locName)
+        console.log(loc.data.results[0].geometry.location)
+    })
+}
+
+
+
+
+
+
 
 
