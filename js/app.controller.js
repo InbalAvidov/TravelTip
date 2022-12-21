@@ -1,5 +1,6 @@
 import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
+import { utilService } from './services/util.service.js'
 import { weatherService } from './services/weather.service.js'
 
 // import { storageService } from './services/async-storage.service.js'
@@ -9,6 +10,7 @@ window.onAddMarker = onAddMarker
 window.onPanTo = onPanTo
 window.onGetLocs = onGetLocs
 window.onGetUserPos = onGetUserPos
+window.onSearch = onSearch
 
 function onInit() {
     onGetLocs()
@@ -68,6 +70,11 @@ function onGetUserPos(ev) {
 
 function onPanTo(lat,lng) {
     mapService.panTo(lat, lng)
+}
+
+function onSearch(locName) {
+    let debouncedSearch = utilService.debounce(mapService.search, 3000)
+    console.log(debouncedSearch(locName))
 }
 
 function renderWeather(lat,lng,locName){
