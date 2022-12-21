@@ -2,7 +2,7 @@ export const weatherService = {
     getWeather
 }
 
-import { utilService } from "./storage.service.js"
+import {storgeService } from "./storage.service.js"
 
 window.gTimeOutId = ''
 
