@@ -7,6 +7,7 @@ button{
     border: none;
     padding: 5px;
     color: white;
+    cursor: pointer;
 }
 .travel-tip{
     padding: 10px;
@@ -64,4 +65,13 @@ form{
     grid-column: 2;
     grid-row: 3;
     
+}
+
+table{
+    border-collapse: collapse;
+}
+
+td{
+    width: 100%;
+    border: 1px solid white;
 }

@@ -1,5 +1,6 @@
 import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
+// import { storageService } from './services/async-storage.service.js'
 
 window.onload = onInit
 window.onAddMarker = onAddMarker
@@ -8,7 +9,7 @@ window.onGetLocs = onGetLocs
 window.onGetUserPos = onGetUserPos
 
 function onInit() {
-    console.log('hiiii');
+    onGetLocs()
     mapService.initMap()
         .then(() => {
             console.log('Map is ready')
@@ -32,8 +33,20 @@ function onAddMarker() {
 function onGetLocs() {
     locService.getLocs()
         .then(locs => {
-            console.log('Locations:', locs)
-            document.querySelector('.locs').innerText = JSON.stringify(locs, null, 2)
+            console.log(locs);
+            const strHTML = locs.map(loc => {
+                const pos = {lat:loc.lat, lng:loc.lng}
+                return `<tr>
+                    <td>${loc.name}</td>
+                    <td>${loc.lat},${loc.lng}</td>
+                    <td>
+                    <button onclick="onPanTo(${loc.lat}, ${loc.lng})">Go</button>
+                    <button>Delete</button>
+                    </td>
+                </tr>`
+            }
+            )
+            document.querySelector('table').innerHTML += strHTML.join('')
         })
 }
 
@@ -42,8 +55,7 @@ function onGetUserPos(ev) {
     getPosition()
         .then(location => {
             const {latitude:lat, longitude:lng} = location.coords
-            const pos ={lat,lng}
-            onPanTo(pos)
+            onPanTo(lat,lng)
 
         })
         .catch(err => {
@@ -51,6 +63,7 @@ function onGetUserPos(ev) {
         })
 }
 
-function onPanTo({lat,lng}) {
+function onPanTo(lat,lng) {
     mapService.panTo(lat, lng)
 }
+
