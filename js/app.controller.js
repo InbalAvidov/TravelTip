@@ -37,18 +37,19 @@ function onGetLocs() {
         })
 }
 
-function onGetUserPos(ev) {
-    ev.preventDefault()
+function onGetUserPos() {
     getPosition()
-        .then(geo => {
-            const {latitude:lat,longitude:lng} = geo.coords
-            const pos ={lat,lng}
-            onPanTo(pos)
+        .then(pos => {
+            console.log('User position is:', pos.coords)
+            document.querySelector('.user-pos').innerText =
+                `Latitude: ${pos.coords.latitude} - Longitude: ${pos.coords.longitude}`
         })
         .catch(err => {
             console.log('err!!!', err)
         })
 }
-function onPanTo({lat,lng}) {
-    mapService.panTo(lat, lng)
+
+function onPanTo() {
+    console.log('Panning the Map')
+    mapService.panTo(35.6895, 139.6917)
 }
