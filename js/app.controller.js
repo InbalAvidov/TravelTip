@@ -100,7 +100,7 @@ function renderWeather(lat,lng,locName){
  const {country,city,desc,AvgTemp,minTemp,maxTemp,wind}=weather
  const strHTML= `
  <p><span class="place">${city}, ${country}</span><span class="desc"> ${desc}</span></p>
- <p><span class="temp">${AvgTemp}</span> temperture from ${minTemp} to ${maxTemp}.wind ${wind} m/s </p>
+ <p><span class="temp">${AvgTemp}&#8451</span> temperture from ${minTemp} to ${maxTemp}.wind ${wind} m/s </p>
  `
  document.querySelector('.weather').innerHTML=strHTML
 })

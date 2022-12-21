@@ -79,14 +79,14 @@ function addMarker({ lat, lng, name, id }) {
         id,
     })
     gMarkers.push({lat,lng,name,id})
-    utilService.saveToStorage(MARKERS_KEY, gMarkers)
+    storgeService.saveToStorage(MARKERS_KEY, gMarkers)
 }
 
 
 function spliceMarker(id) {
     const idx = gMarkers.findIndex(marker => marker.id === id)
     gMarkers.splice(idx, 1)
-    utilService.saveToStorage(MARKERS_KEY, gMarkers)
+    storgeService.saveToStorage(MARKERS_KEY, gMarkers)
     initMap()
 }
 

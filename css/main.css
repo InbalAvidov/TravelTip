@@ -15,7 +15,7 @@ button{
 }
 .travel-tip{
     padding: 10px;
-    background-color: lightsalmon;
+    background-color: rgb(241 243 244);
     display: grid;
     grid-template-columns:  40% 60% ;
     grid-template-rows: 20% 20% 60%;
@@ -54,13 +54,13 @@ form{
     grid-row: 3;
 }
 .weather{
-    background-color: wheat;
+    background-color: rgb(137 203 120);
     height:fit-content;
     width: 95%;
     text-align: center;
 }
 .location-table{
-    background-color: rgb(70, 70, 174);
+    background-color: rgb(203 223 247);
     height:fit-content;
     width: 95%;
     text-align: center;
@@ -68,7 +68,6 @@ form{
 .map{
     grid-column: 2;
     grid-row: 3;
-    
 }
 
 table{
