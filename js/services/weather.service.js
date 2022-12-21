@@ -6,7 +6,7 @@ import { utilService } from "./storage.service.js"
 
 window.gTimeOutId = ''
 
-function getWeather({ lat = 31, lng = 31, locName = 'quatar' }) {
+function getWeather({ lat = 31, lng = 31, locName = 'Quatar' }) {
     console.log('hi from weather:')
     const KEY = 'weatherDB'
     const termLocMap = utilService.loadFromStorage(KEY) || {}
@@ -19,7 +19,7 @@ function getWeather({ lat = 31, lng = 31, locName = 'quatar' }) {
     console.log('Getting from Network')
     //  clearTimeout(timeOutId)
     const API_KEY = '30dc2cce8468139852bf28b9c5bed2a9'
-    return axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${API_KEY}`).then(res => {
+    return axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=metric&appid=${API_KEY}`).then(res => {
         const { name, sys, weather, main, wind } = res.data
         const { country } = sys
         const { description } = weather[0]
@@ -35,9 +35,10 @@ function getWeather({ lat = 31, lng = 31, locName = 'quatar' }) {
             maxTemp: temp_max,
             wind: speed
         }
+        console.log('weatherInfo to storage:',weatherInfo)
         termLocMap[locName] = weatherInfo
-        console.log('info to storage:', weatherInfo[locName])
-        utilService.saveToStorage(KEY, weatherInfo)
+        // console.log('info to storage:', weatherInfo[locName])
+        utilService.saveToStorage(KEY, termLocMap)
         setTimeout(() => utilService.cleanStorage(), 1000 * 60 * 60 * 24)
         console.log('info:', weatherInfo)
         return weatherInfo

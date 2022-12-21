@@ -75,3 +75,20 @@ td{
     width: 100%;
     border: 1px solid white;
 }
+
+/* .p{
+font-family: cursive
+} */
+
+.place{
+  font-weight: 700;
+   /* color: blue; */
+}
+
+.temp{
+    display: inline-block;
+    border-radius: 2rem;
+    background-color: gray;
+    padding: 0.5em
+
+}
