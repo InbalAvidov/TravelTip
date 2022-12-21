@@ -2,6 +2,10 @@ body{
     margin: 0;
     font-family:Arial, Helvetica, sans-serif
 }
+*{
+box-sizing: border-box;
+}
+
 button{
     background-color: grey;
     border: none;
@@ -15,7 +19,7 @@ button{
     display: grid;
     grid-template-columns:  40% 60% ;
     grid-template-rows: 20% 20% 60%;
-    height: 80vh;
+    height: 100vh;
 }
 
 .title{
@@ -51,13 +55,13 @@ form{
 }
 .weather{
     background-color: wheat;
-    height: 50%;
+    height:fit-content;
     width: 95%;
     text-align: center;
 }
 .location-table{
     background-color: rgb(70, 70, 174);
-    height: 50%;
+    height:fit-content;
     width: 95%;
     text-align: center;
 }

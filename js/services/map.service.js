@@ -1,14 +1,23 @@
 export const mapService = {
     initMap,
     addMarker,
-    panTo
+    panTo,
+    spliceMarker,
+    addMarkers
 }
+
+import { locService } from './loc.service.js'
+import { appController } from '../app.controller.js'
+import { utilService } from './storage.service.js'
+import { storageService } from './async-storage.service.js'
+
 
 // Var that is used throughout this Module (not global)
 var gMap
+var gMarkers 
+var MARKERS_KEY = 'markers'
 
 function initMap(lat = 32.0749831, lng = 34.9120554) {
-    console.log('InitMap')
     return _connectGoogleApi()
         .then(() => {
             const myLatlng = { lat, lng }
@@ -18,37 +27,66 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
                 center: myLatlng,
                 zoom: 15
             })
-            // Create the initial InfoWindow.
-            let infoWindow = new google.maps.InfoWindow({
-                content: "Click the map to get Lat/Lng!",
-                position: myLatlng,
-            });
 
-            infoWindow.open(gMap);
-            // Configure the click listener.
+            let infoWindow = new google.maps.InfoWindow({
+                content: "Click the map to add Location!",
+                position: myLatlng,
+            })
+
+            infoWindow.open(gMap)
             gMap.addListener("click", (mapsMouseEvent) => {
-                // Close the current InfoWindow.
-                infoWindow.close();
-                // Create a new InfoWindow.
+
+                infoWindow.close()
                 infoWindow = new google.maps.InfoWindow({
                     position: mapsMouseEvent.latLng,
-                });
+                })
                 infoWindow.setContent(
                     JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2)
-                );
-                infoWindow.open(gMap);
-            });
-            console.log('Map!', gMap)
+                )
+                const newLocation = JSON.parse(infoWindow.content)
+                locService.save(newLocation)
+                    .then(appController.renderLocations())
+                    .then((loc) => addMarker(loc))
+            })
         })
+
 }
 
-function addMarker(loc) {
-    var marker = new google.maps.Marker({
-        position: loc,
-        map: gMap,
-        title: 'Hello World!'
+function addMarkers() {
+    gMarkers = utilService.loadFromStorage(MARKERS_KEY)
+    if (!gMarkers || gMarkers.length === 0) 
+    {
+        gMarkers = []
+        return
+    }
+    gMarkers.forEach(marker => {
+        const { lat, lng } = marker
+        var marker = new google.maps.Marker({
+            position: { lat, lng },
+            map: gMap,
+            title: marker.name,
+            id: marker.id
+        })
     })
-    return marker
+}
+
+function addMarker({ lat, lng, name, id }) {
+    var marker = new google.maps.Marker({
+        position: { lat, lng },
+        map: gMap,
+        title: name,
+        id,
+    })
+    gMarkers.push({lat,lng,name,id})
+    utilService.saveToStorage(MARKERS_KEY, gMarkers)
+}
+
+
+function spliceMarker(id) {
+    const idx = gMarkers.findIndex(marker => marker.id === id)
+    gMarkers.splice(idx, 1)
+    utilService.saveToStorage(MARKERS_KEY, gMarkers)
+    initMap()
 }
 
 function panTo(lat, lng) {
@@ -77,33 +115,33 @@ function getWeather(lat, lon) {
     const currweather = storageService.load(KEY) || {}
     if (currweather) return Promise.resolve(currweather)
 
-    
+
 
     console.log('Getting from Network')
     const API_KEY = '30dc2cce8468139852bf28b9c5bed2a9'
     return axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&units=metric&lon=${lon}&appid=${API_KEY}`).then(res => {
-        const { name ,sys, weather, main, wind } = res.data
+        const { name, sys, weather, main, wind } = res.data
         const { country } = sys
-        const {description}=weather[0]
-        const{ temp,temp_min,temp_max}=main
-        const {speed}=wind
+        const { description } = weather[0]
+        const { temp, temp_min, temp_max } = main
+        const { speed } = wind
         // console.log(':', sys, weather, main, wind)
         const requiredWeatherInfo = {
             country,
-            city:name,
+            city: name,
             // flag,
-            weather:description,
-            AvgTemp:temp,
-            minTemp:temp_min,
-            MaxTemp:temp_max,
-            wind:speed
+            weather: description,
+            AvgTemp: temp,
+            minTemp: temp_min,
+            MaxTemp: temp_max,
+            wind: speed
         }
-        storageService.save(KEY,requiredWeatherInfo)
-        setTimeout(()=>cleanStorage(),1000*60*60*24)
+        storageService.save(KEY, requiredWeatherInfo)
+        setTimeout(() => cleanStorage(), 1000 * 60 * 60 * 24)
         return requiredWeatherInfo
     })
 }
 
-function cleanStorage(){
-    storageService.save(KEY,null)
+function cleanStorage() {
+    storageService.save(KEY, null)
 }
